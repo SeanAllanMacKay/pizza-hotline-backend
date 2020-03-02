@@ -21,11 +21,11 @@ class ApplicationController < ActionController::API
 
     def encode_token(payload, exp = 24.hours.from_now)
         payload[:exp] = exp.to_i
-        JWT.encode(payload, 'secret')
+        JWT.encode(payload, SECRET_KEY)
     end
 
     def decode_token(token)
-        JWT.decode(token, 'secret', true, algorithm: 'HS256')
+        JWT.decode(token, SECRET_KEY, true, algorithm: 'HS256')
     end
 
     def decoded_token
