@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+    skip_before_action :authorized, only: [:create]
+
     def create
         user = User.new(
             email: params[:email],
@@ -10,9 +12,15 @@ class UsersController < ApplicationController
         )
 
         if user.save
-            render json: { success: true }, status: 200
+            payload = { user_id: user[:id] }
+            token = encode_token(payload)
+            render json: { success: true, token: token }, status: 200
         else
             render json: { success: false, error: 'There was an error creating your account' }, status: 500
         end
+    end
+
+    def get
+        render json: { success: true, user: { email: @user.email, first_name: @user.first_name, last_name: @user.last_name } }, status: 200
     end
 end

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  post "/users" => "users#create"
+  get "/user" => "users#get"
+  post "/user" => "users#create"
+
+  post "/login" => "authentication#login"
 end
