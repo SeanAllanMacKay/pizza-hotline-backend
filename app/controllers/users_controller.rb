@@ -8,19 +8,20 @@ class UsersController < ApplicationController
             first_name: params[:first_name],
             last_name: params[:last_name],
             phone_number: params[:phone_number],
-            recieve_promos: params[:recieve_promos]
+            recieve_promos: params[:recieve_promos],
+            admin: false
         )
 
         if user.save
             payload = { user_id: user[:id] }
             token = encode_token(payload)
-            render json: { success: true, token: token }, status: 200
+            render json: { success: true, user: { email: @user.email, first_name: @user.first_name, last_name: @user.last_name, phone_number: @user.phone_number }, token: token }, status: 200
         else
             render json: { success: false, error: 'There was an error creating your account' }, status: 500
         end
     end
 
     def get
-        render json: { success: true, user: { email: @user.email, first_name: @user.first_name, last_name: @user.last_name, phone_number: @user.phone_number } }, status: 200
+        render json: { success: true, user: { email: @user.email, first_name: @user.first_name, last_name: @user.last_name, phone_number: @user.phone_number, admin: @user.admin } }, status: 200
     end
 end

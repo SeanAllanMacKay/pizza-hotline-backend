@@ -2,6 +2,18 @@ class ApplicationController < ActionController::API
     before_action :authorized
 
     SECRET_KEY = ENV['SECRET']
+    ENVIRONMENT = ENV['ENVIRONMENT']
+
+    def is_admin
+        if(@user.admin == true)
+          true
+        else
+          render json: {
+            success: false,
+            error: 'Unauthorized'
+          }, status: 401
+        end
+    end
 
     def authorized
         render json: { message: 'Please log in' },

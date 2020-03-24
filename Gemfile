@@ -18,6 +18,10 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'jwt'
 
+gem 'kaminari'
+
+gem 'rack-cors', require: 'rack/cors'
+
 gem 'dotenv-rails', groups: [:development, :test]
 
 # Use Active Storage variant
