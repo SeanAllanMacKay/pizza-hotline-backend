@@ -1,3 +1,7 @@
 class Sauce < ApplicationRecord
-    has_and_belongs_to_many :tags
+    validates :name, presence: true
+
+    has_many :sauces_sauce_tags
+
+    has_many :sauce_tags, through: :sauces_sauce_tags
 end

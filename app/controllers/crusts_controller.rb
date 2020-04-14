@@ -2,14 +2,23 @@ class CrustsController < ApplicationController
   before_action :is_admin
 
   def upsert
-    crust = Crust.where(name: params[:name]).first_or_initialize()
+    if params[:id] != nil
+      crust = Crust.find(params[:id])
+    else
+      crust = Crust.new
+    end
 
-    if(params[:tags])
+    if(params[:tags] != nil)
       params[:tags].each do |tag|
-        newTag = Tag.where(name: tag).first_or_create({
-          name: tag
-        })
-        crust.tags << newTag
+        newTag = CrustTag.find(tag)
+        crust.crust_tags << newTag
+      end
+    end
+
+    if params[:sizes] != nil
+      params[:sizes].each do |size|
+        newSize = PizzaSize.find(size)
+        crust.pizza_sizes << newSize
       end
     end
 
@@ -32,7 +41,8 @@ class CrustsController < ApplicationController
       id: crust[:id],
       name: crust[:name],
       description: crust[:description],
-      tags: crust.tags
+      tags: crust.crust_tags,
+      sizes: crust.pizza_sizes
     }}
 
     render json: {
@@ -43,5 +53,16 @@ class CrustsController < ApplicationController
   end
 
   def delete
+    crust = Crust.find(params[:id])
+
+    if crust.destroy
+      render json: {
+        success: true,
+      }, status: 200
+    else
+      render json: {
+        success: false,
+      }, status: 500
+    end
   end
 end

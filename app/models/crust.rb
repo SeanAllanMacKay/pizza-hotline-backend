@@ -1,3 +1,9 @@
 class Crust < ApplicationRecord
-    has_and_belongs_to_many :tags
+    validates :name, presence: true
+
+    has_many :crusts_crust_tags
+    has_many :crusts_pizza_sizes
+
+    has_many :crust_tags, through: :crusts_crust_tags
+    has_many :pizza_sizes, through: :crusts_pizza_sizes
 end

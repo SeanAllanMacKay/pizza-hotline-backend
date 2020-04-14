@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_24_045848) do
+ActiveRecord::Schema.define(version: 2020_04_14_221404) do
+
+  create_table "crust_tags", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "crusts", force: :cascade do |t|
     t.string "name"
@@ -19,9 +26,72 @@ ActiveRecord::Schema.define(version: 2020_03_24_045848) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "crusts_tags", force: :cascade do |t|
-    t.string "tag_id"
+  create_table "crusts_crust_tags", force: :cascade do |t|
     t.string "crust_id"
+    t.string "crust_tag_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "crusts_pizza_sizes", force: :cascade do |t|
+    t.string "crust_id"
+    t.string "pizza_size_id"
+    t.decimal "first_price"
+    t.decimal "additional_price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "drink_sizes", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.integer "amount"
+    t.string "unit"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "drink_tags", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "drinks", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "drinks_drink_sizes", force: :cascade do |t|
+    t.string "drink_id"
+    t.string "drink_size_id"
+    t.decimal "price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "drinks_drink_tags", force: :cascade do |t|
+    t.string "drink_id"
+    t.string "drink_tag_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "pizza_sizes", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.integer "size"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.decimal "topping_price", default: "0.0"
+  end
+
+  create_table "sauce_tags", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -33,9 +103,47 @@ ActiveRecord::Schema.define(version: 2020_03_24_045848) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "sauces_tags", force: :cascade do |t|
-    t.string "tag_id"
+  create_table "sauces_sauce_tags", force: :cascade do |t|
     t.string "sauce_id"
+    t.string "sauce_tag_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "side_sizes", force: :cascade do |t|
+    t.string "name"
+    t.integer "amount"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "side_tags", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "sides", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "code"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "sides_side_sizes", force: :cascade do |t|
+    t.string "side_id"
+    t.string "side_size_id"
+    t.decimal "price"
+    t.string "code"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "sides_side_tags", force: :cascade do |t|
+    t.string "side_id"
+    t.string "side_tag_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -47,23 +155,31 @@ ActiveRecord::Schema.define(version: 2020_03_24_045848) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tags", force: :cascade do |t|
+  create_table "topping_tags", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.string "description"
-  end
-
-  create_table "tags_toppings", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "tag_id"
-    t.string "topping_id"
   end
 
   create_table "toppings", force: :cascade do |t|
     t.string "name"
     t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "toppings_pizza_sizes", force: :cascade do |t|
+    t.string "topping_id"
+    t.string "pizza_size_id"
+    t.decimal "price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "toppings_topping_tags", force: :cascade do |t|
+    t.string "topping_id"
+    t.string "topping_tag_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

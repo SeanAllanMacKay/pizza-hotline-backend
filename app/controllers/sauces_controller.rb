@@ -2,13 +2,15 @@ class SaucesController < ApplicationController
   before_action :is_admin
 
   def upsert
-    sauce = Sauce.where(name: params[:name]).first_or_initialize()
+    if params[:id] != nil
+      sauce = Sauce.find(params[:id])
+    else
+      sauce = Sauce.new
+    end
 
     params[:tags].each do |tag|
-      newTag = Tag.where(name: tag).first_or_create({
-        name: tag
-      })
-      sauce.tags << newTag
+      newTag = SauceTag.find(tag)
+      sauce.sauce_tags << newTag
     end
 
     if sauce.update(
@@ -30,7 +32,7 @@ class SaucesController < ApplicationController
       id: sauce[:id],
       name: sauce[:name],
       description: sauce[:description],
-      tags: sauce.tags
+      tags: sauce.sauce_tags
     }}
 
     render json: {
@@ -41,5 +43,16 @@ class SaucesController < ApplicationController
   end
 
   def delete
+    sauce = Sauce.find(params[:id])
+
+    if sauce.destroy
+      render json: {
+        success: true,
+      }, status: 200
+    else
+      render json: {
+        success: false,
+      }, status: 500
+    end
   end
 end

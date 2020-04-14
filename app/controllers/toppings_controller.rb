@@ -1,15 +1,16 @@
 class ToppingsController < ApplicationController
   before_action :is_admin
 
-  #Creates if topping doesn't exist, updates if it does
   def upsert
-    topping = Topping.where(name: params[:name]).first_or_initialize()
+    if params[:id] != nil
+      topping = Topping.find(params[:id])
+    else
+      topping = Topping.new
+    end
 
     params[:tags].each do |tag|
-      newTag = Tag.where(name: tag).first_or_create({
-        name: tag
-      })
-      topping.tags << newTag
+      newTag = ToppingTag.find(tag)
+      topping.topping_tags << newTag
     end
 
     if topping.update(
@@ -26,13 +27,12 @@ class ToppingsController < ApplicationController
     end
   end
 
-  #Gets paginated toppings. If name specified, returns topping with that name
   def get
     toppings = Topping.all.map { |topping| {
       id: topping[:id],
       name: topping[:name],
       description: topping[:description],
-      tags: topping.tags
+      tags: topping.topping_tags
     }}
 
     render json: {
@@ -43,5 +43,16 @@ class ToppingsController < ApplicationController
   end
 
   def delete
+    topping = Topping.find(params[:id])
+
+    if topping.destroy
+      render json: {
+        success: true,
+      }, status: 200
+    else
+      render json: {
+        success: false,
+      }, status: 500
+    end
   end
 end

@@ -1,3 +1,7 @@
 class Topping < ApplicationRecord
-    has_and_belongs_to_many :tags
+    validates :name, presence: true
+
+    has_many :toppings_topping_tags
+
+    has_many :topping_tags, through: :toppings_topping_tags
 end

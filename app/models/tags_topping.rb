@@ -1,2 +1,0 @@
-class TagsTopping < ApplicationRecord
-end
