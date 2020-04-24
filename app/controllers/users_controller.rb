@@ -12,7 +12,7 @@ class UsersController < ApplicationController
             admin: false
         )
 
-        if user.save
+        if @user.save
             payload = { user_id: user[:id] }
             token = encode_token(payload)
             render json: { success: true, user: { email: @user.email, first_name: @user.first_name, last_name: @user.last_name, phone_number: @user.phone_number }, token: token }, status: 200
