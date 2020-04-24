@@ -21,8 +21,6 @@ gem 'kaminari'
 
 gem 'rack-cors', require: 'rack/cors'
 
-gem 'dotenv-rails', groups: [:development, :test]
-
 gem "google-cloud-storage", "~> 1.8", require: false
 
 # Use Active Storage variant
