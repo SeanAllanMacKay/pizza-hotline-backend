@@ -1,6 +1,8 @@
 class CrustsController < ApplicationController
   before_action :is_admin
 
+  include Rails.application.routes.url_helpers
+
   def upsert
     if params[:id] != nil
       crust = Crust.find(params[:id])
@@ -9,22 +11,48 @@ class CrustsController < ApplicationController
     end
 
     if(params[:tags] != nil)
-      params[:tags].each do |tag|
+      newTags = JSON.parse params[:tags]
+
+      crust.crust_tags.each do |tag|
+        if !newTags.include?(tag)
+          crust.crust_tags.delete(tag)
+        end
+      end
+
+      newTags.each do |tag|
         newTag = CrustTag.find(tag)
-        crust.crust_tags << newTag
+
+        if !crust.crust_tags.include?(newTag)
+          crust.crust_tags << newTag
+        end
       end
     end
 
-    if params[:sizes] != nil
-      params[:sizes].each do |size|
-        newSize = PizzaSize.find(size)
-        crust.pizza_sizes << newSize
+    if params[:sizes] != 'null'
+      newSizes = JSON.parse params[:sizes]
+
+      crust.pizza_sizes.each do |size|
+        if !newSizes.include?(size)
+          crust.pizza_sizes.delete(size)
+        end
       end
+
+      newSizes.each do |size|
+        newSize = PizzaSize.find(size)
+
+        if !crust.pizza_sizes.include?(newSize)
+          crust.pizza_sizes << newSize
+        end
+      end
+    end
+
+    if params[:image] != nil
+      crust.image.attach(params[:image])
     end
 
     if crust.update(
       name: params[:name],
-      description: params[:description]
+      description: params[:description],
     )
       render json: {
         success: true,
@@ -32,7 +60,7 @@ class CrustsController < ApplicationController
     else
       render json: {
         success: false
-      }, status: 200
+      }, status: 500
     end
   end
 
@@ -42,7 +70,8 @@ class CrustsController < ApplicationController
       name: crust[:name],
       description: crust[:description],
       tags: crust.crust_tags,
-      sizes: crust.pizza_sizes
+      sizes: crust.pizza_sizes,
+      image: crust.image.attached? ? crust.image.key.to_s : nil
     }}
 
     render json: {
